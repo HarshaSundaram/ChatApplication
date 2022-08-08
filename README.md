@@ -5,7 +5,7 @@
 
   create authentication service file created for login, signup - auth.service.ts, auth.service.spec.ts,chat.service.ts, chat.service.spec.ts
 
- create folder backend - npm init - install dependencies - create app.js file - 
+ create folder backend - npm init - install dependencies - create app.js file - create a folder src - create a folder model -
 
 
 
