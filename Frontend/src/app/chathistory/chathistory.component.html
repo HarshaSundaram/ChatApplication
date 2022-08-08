@@ -1,1 +1,157 @@
-<p>chathistory works!</p>
+
+<body>
+    <div class="body">
+      
+    <!-- Private chat area -->
+        
+      <div class="app-profile-box col-md-12" *ngIf="userSelected() && checkPrivate()"> 
+        <div class="app-profile-box-name col-md-10">
+         {{user.name}}       
+        </div>  
+        <div class="button col-md-3"  >
+          <button class="btn btn-outline-danger" (click)="blockUser(user.email)" *ngIf="!checkBlock()"  style="margin-right: 2mm;">Block</button>
+          <button class="btn btn-outline-danger" (click)="unblockUser(user.email)" *ngIf="checkBlock()" style="margin-right: 2mm;">Unblock</button>       
+          <button class="btn btn-outline-primary" (click)="muteUser(user.email)" *ngIf="!checkMute()">Mute</button>
+          <button class="btn btn-outline-primary" (click)="unmuteUser(user.email)" *ngIf="checkMute()">Unmute</button>
+          
+        </div>  
+      </div>
+      
+      <div #scrollMe class="app-main" *ngIf="userSelected()">
+        
+          <div class="chat-wrapper">
+            <div *ngFor="let item of messageArray"  >
+              
+              <div *ngIf="item.user==user.email" class="message-wrapper ">
+                <div class="message-box" id="select" >
+                  <span >{{item.message}}
+                    <a href=""><i (click)="forwardMsg(item)" style="color:white" class="material-icons">shortcut</i></a>
+                    </span>
+                  <div *ngIf="item.imgfile!=undefined">
+                    <span><img [src]="item.imgfile" style="width:100px;height:100px"></span>
+                   </div>
+                 <br>
+                  <span style="color: rgb(0, 0, 0);" >{{item.time}}</span>
+                </div>
+                
+              </div>
+              
+              <div *ngIf="item.user!==user.email" class="message-wrapper reverse">
+                <div class="message-box">
+                  <span>{{item.message}}                 
+                    <a href="" ><i (click)="forwardMsg(item)" style="color:white" class="material-icons">shortcut</i></a>
+                  </span>
+                  <div *ngIf="item.imgfile!=undefined">
+                    <span><img [src]="item.imgfile" style="width:100px;height:100px"></span>
+                   </div>
+                 <br>
+                  <span style="color: rgb(0, 0, 0);" >{{item.time}}</span>
+                </div>
+              </div>
+            </div>
+          </div>        
+        </div>
+      
+      
+        <button class="chat-attachment-btn"  *ngIf="userSelected()">
+          <input type="file"  name="image" [(ngModel)]="imagemodel" id="input" (change)="onFileSelected($event)"  required accept="image/*">        
+          <button  type="submit" (click)="sendImage()"  class="chat-send-btn"></button>
+        </button>
+  
+        <form class="chat-input-wrapper" (submit)=sendMsg()  *ngIf="userSelected()">       
+          <div class="input-wrapper" >
+            <input type="text" name="msg" [(ngModel)]="msg" class="chat-input" placeholder="Enter your message here" >
+            <!--<button class="emoji-btn" >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-smile" viewBox="0 0 24 24">
+              <defs/>
+              <circle cx="12" cy="12" r="10" />
+              <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/>
+            </svg>
+            </button>-->
+          </div>
+          <button type="submit" class="chat-send-btn">Send</button>
+        </form>
+        
+  
+      <!-- welcome image -->
+  
+      <div class="app-main" *ngIf="!userSelected() && !groupSelected()" style="height: 550px;" >
+          <div class="chat-wrapper">
+            <img src="../../assets/images/second.jpg" alt="" width="100%" height="518px">         
+          </div>
+      </div> 
+  
+  
+      <!-- Group chat area -->
+      
+      <div class="app-profile-box col-md-12" *ngIf="groupSelected() && checkGroup()"> 
+        <div class="app-profile-box-name col-md-10" >
+         {{group.name}}       
+        </div>  
+        <div class="button col-md-3"  >
+          <button class="btn btn-outline-info" (click)="joinGroup(group)" *ngIf="!checkinsideGroup()"  style="margin-right: 2mm;">Join</button>
+          <button class="btn btn-outline-danger" (click)="leaveGroup(group)" *ngIf="checkinsideGroup()" style="margin-right: 2mm;">Leave</button>       
+        </div>  
+      </div>
+      
+      <div #scrollMe class="app-main" *ngIf="groupSelected()">
+          <div class="chat-wrapper">
+            <div *ngFor="let item of messageArray">
+              <div *ngIf="item.user!==usermail" class="message-wrapper ">
+                <div class="message-box">
+                  <span>{{item.message}}
+  
+                    <a href=""  (click)="forwardMsg(item)" ><i style="color:white" class="material-icons">shortcut</i></a>
+                  </span>
+  
+                  <div *ngIf="item.imgfile!=undefined">
+                    <span><img [src]="item.imgfile" style="width:100px;height:100px"></span>
+                  </div>
+                 <br>
+                  <span style="color: rgb(0, 0, 0);">{{item.user}}</span><br>                
+                  <span style="color: rgb(0, 0, 0);" >{{item.time}}</span>
+                </div>
+              </div>
+              <div *ngIf="item.user==usermail" class="message-wrapper reverse">
+                <div class="message-box">
+                  <span>{{item.message}}
+  
+                    <a href="" ><i (click)="forwardMsg(item)" style="color:white" class="material-icons">shortcut</i></a>
+                  </span>
+  
+                  <div *ngIf="item.imgfile!=undefined">
+                    <span><img [src]="item.imgfile" style="width:100px;height:100px"></span>
+                  </div>
+                 <br>
+                  <span style="color: rgb(0, 0, 0);">{{item.user}}</span><br>
+                  <span style="color: rgb(0, 0, 0);" >{{item.time}}</span>
+                </div>
+              </div>
+            </div>
+          </div>       
+        </div>
+      
+  
+        <button class="chat-attachment-btn" *ngIf="groupSelected()">
+          <input type="file"  name="image" [(ngModel)]="imagemodel" id="input" (change)="onFileSelected($event)"  required accept="image/*">        
+          <button  type="submit" (click)="sendGroupImage()"  class="chat-send-btn"></button>
+        </button>
+  
+        <form class="chat-input-wrapper" (submit)=sendGroupMsg()  *ngIf="groupSelected()">        
+          <div class="input-wrapper" >
+            <input type="text" name="msg" [(ngModel)]="msg" class="chat-input" placeholder="Enter your message here" >
+           <!-- <button class="emoji-btn" >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-smile" viewBox="0 0 24 24">
+              <defs/>
+              <circle cx="12" cy="12" r="10" />
+              <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/>
+            </svg>
+            </button>-->
+          </div>
+          <button type="submit" class="chat-send-btn">Send</button>
+        </form>
+      
+  
+      </div>
+    </body>
+

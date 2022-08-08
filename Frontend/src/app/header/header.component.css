@@ -1,0 +1,20 @@
+.first {
+  background-color: rgb(17, 17, 65);
+  padding: 20px;
+}
+.first ul li a {
+  color: white;
+}
+.main {
+  background-color: black;
+  padding-top: 20px;
+}
+.navbar {
+  display: none;
+}
+@media screen and (max-width: 1025px) {
+  .navbar {
+    display: flex;
+    position: relative;
+  }
+}
